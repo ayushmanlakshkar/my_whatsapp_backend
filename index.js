@@ -6,7 +6,7 @@ const Group = require('./models/groupmodel')
 const Message = require('./models/messagemodel')
 
 const dotenv = require('dotenv');
-// const cors = require('cors');
+const cors = require('cors');
 const authroutes = require('./routes/authroutes')
 const contactroutes = require('./routes/contactroutes')
 const chatroutes = require('./routes/chatroutes');
