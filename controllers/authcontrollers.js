@@ -48,7 +48,7 @@ const loginUser = async (req, res) => {
 };
 
 
-const tokenLogin = (req, res) => {
+const tokenLogin = async (req, res) => {
     if (req.body.headers && req.body.username) {
         const token = req.body.headers.Authorization;
 
@@ -60,7 +60,7 @@ const tokenLogin = (req, res) => {
                 res.status(400).send('Invalid token format');
             } else {
                 const actualToken = tokenParts[1];
-                jwt.verify(actualToken, process.env.JWT_SECRET_KEY, (err, decoded) => {
+             jwt.verify(actualToken, process.env.JWT_SECRET_KEY, (err, decoded) => {
                     if (err) {
                         res.status(400).send(err)
                     } else {
@@ -79,9 +79,9 @@ const tokenLogin = (req, res) => {
     }
 }
 
-const check =(req,res)=>{
-    console.log("hello")
-    res.send("okay")
+const check =async (req,res)=>{
+    const users = await User.findOne({})
+    res.send(users)
 }
 
 module.exports = { registerUser, loginUser, tokenLogin ,check}
