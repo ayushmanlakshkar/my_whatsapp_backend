@@ -80,7 +80,7 @@ const tokenLogin = async (req, res) => {
 }
 
 const check =async (req,res)=>{
-    const users = await User.findOne({})
+    const users = await User.find({})
     res.send(users)
 }
 
