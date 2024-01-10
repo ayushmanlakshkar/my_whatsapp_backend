@@ -4,28 +4,31 @@ const jwt = require('jsonwebtoken');
 
 const registerUser = async (req, res) => {
     try {
-        const { username, password, confirmpassword } = req.body;
-    
-        if (!username || !password || !confirmpassword) {
-            return res.status(400).send('Please enter all fields');
+        if (req.body.confirmpassword) {
+            const userPresent = await User.findOne({ username: req.body.username });
+            if (!userPresent) {
+                let profile;
+                if (req.file) {
+                    profile = req.file.path
+                } else {
+                    profile = 'public/profilePictures/logo.png';
+                }
+                await User.create({ username: req.body.username, password: req.body.password, profile })
+                    .then(async (user) => {
+                        const token = await user.generateToken();
+                        res.send({ message: `User created successfully : ${req.body.username}`, token });
+                    }).catch(error => {
+                        res.status(400).send(error)
+                    });
+            } else {
+                res.status(400).send("Username already in present. Choose some other")
+            }
+        } else {
+            res.status(400).send("Please enter all fields")
         }
-
-        const userPresent = await User.findOne({ username });
-    
-        if (userPresent) {
-            return res.status(400).send('Username already in use. Choose another.');
-        }
-    
-        const profile = req.file ? req.file.path : 'public/profilePictures/logo.png';
-        
-        const user = await User.create({ username, password, profile });
-        const token = await user.generateToken();
-    
-        res.send({ message: `User created successfully: ${username}`, token });
     } catch (error) {
-        res.status(400).send(error);
+        res.status(404).send(error);
     }
-    
 }
 
 const loginUser = async (req, res) => {

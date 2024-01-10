@@ -1,15 +1,22 @@
-const authMiddleware = (req, res, next) => {
-    const { username, password, confirmpassword } = req.body;
-
-    if (!username || !password) {
-        return res.status(400).send('Please enter all the fields');
+const authmiddleware = (req, res, next) => {
+    
+    if (!req.body.username || !req.body.password) {
+        res.status(400).send('Please enter all the fields');
+    }
+    else{
+        if (!req.body.confirmpassword) {
+            next()
+        }
+        else {
+            if (req.body.confirmpassword === req.body.password) {
+                next()
+            }
+            else {
+                res.status(400).send("Password does not match")
+            }
+        }
     }
 
-    if (confirmpassword && confirmpassword !== password) {
-        return res.status(400).send('Password does not match');
-    }
+}
 
-    next();
-};
-
-module.exports = authMiddleware;
+module.exports = authmiddleware 
