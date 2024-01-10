@@ -79,4 +79,8 @@ const tokenLogin = (req, res) => {
     }
 }
 
-module.exports = { registerUser, loginUser, tokenLogin }
+const check =()=>{
+    res.send("okay")
+}
+
+module.exports = { registerUser, loginUser, tokenLogin ,check}
