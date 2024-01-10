@@ -79,7 +79,7 @@ const tokenLogin = (req, res) => {
     }
 }
 
-const check =()=>{
+const check =(req,res)=>{
     console.log("hello")
     res.send("okay")
 }
