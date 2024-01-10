@@ -80,6 +80,7 @@ const tokenLogin = (req, res) => {
 }
 
 const check =()=>{
+    console.log("hello")
     res.send("okay")
 }
 
