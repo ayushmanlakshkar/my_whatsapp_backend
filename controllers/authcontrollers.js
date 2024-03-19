@@ -2,7 +2,7 @@ const User = require("../models/usermodel");
 const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken');
 
-const registerUser = async (req, res) => {
+const registerUser = async (req, res, next) => {
     try {
         const { username, password, confirmpassword } = req.body;
 
@@ -25,26 +25,30 @@ const registerUser = async (req, res) => {
         const user = await User.create({ username, password, profile });
         const token = await user.generateToken();
 
-        res.send({ message: `User created successfully: ${username}`, token });
+        res.send({ message: `User created successfully: ${username}`, token, username: username, profile: user.profile });
     } catch (error) {
-        res.status(400).send(error);
+        next(error)
     }
 
 }
 
-const loginUser = async (req, res) => {
-    const user = await User.findOne({ username: req.body.username });
+const loginUser = async (req, res, next) => {
+    try {
+        const user = await User.findOne({ username: req.body.username });
 
-    if (!user) {
-        return res.status(400).send("No such user exists")
+        if (!user) {
+            return res.status(400).send("No such user exists")
+        }
+        const matchPassword = await bcrypt.compare(req.body.password, user.password)
+        if (!matchPassword) {
+            return res.status(400).send("Incorrect Password")
+        }
+        const token = await user.generateToken();
+        res.send({ message: "User logged in", token, username: user.username, profile: user.profile })
     }
-    const matchPassword = await bcrypt.compare(req.body.password, user.password)
-    if (!matchPassword) {
-        return res.status(400).send("Incorrect Password")
+    catch (error) {
+        next(error)
     }
-    const token = await user.generateToken();
-    res.send({ message: "User logged in", token })
-
 }
 
 const tokenLogin = async (req, res) => {
@@ -64,14 +68,13 @@ const tokenLogin = async (req, res) => {
         if (err) {
             return res.status(400).send(err)
         }
-
         if (decoded.username !== req.body.username) {
-            res.status(400).send("Invalid token for the user")
-
+            return res.status(400).send("Invalid token for the user")
         }
-        res.send("Valid Token")
-
     })
+    const user = await User.findOne({ username: req.body.username })
+    res.send({ message: "Valid Token", username: user.username, profile: user.profile })
+
 
 }
 
