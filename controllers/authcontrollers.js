@@ -24,7 +24,7 @@ const registerUser = async (req, res, next) => {
 
         const user = await User.create({ username, password, profile });
         const token = await user.generateToken();
-
+        console.log(token)
         res.send({ message: `User created successfully: ${username}`, token, username: username, profile: user.profile });
     } catch (error) {
         return res.status(400).send(error)
@@ -56,7 +56,6 @@ const tokenLogin = async (req, res) => {
     if (!req.body.headers || !req.body.username) {
         return res.status(400).send("Some error occured")
     }
-
     const token = req.body.headers.Authorization;
     const tokenParts = token.split(' ');
     if (!token || tokenParts.length !== 2 || tokenParts[0] !== 'Bearer') {
@@ -64,18 +63,26 @@ const tokenLogin = async (req, res) => {
     }
 
     const actualToken = tokenParts[1];
-    jwt.verify(actualToken, process.env.JWT_SECRET_KEY, (err, decoded) => {
+    jwt.verify(actualToken, process.env.JWT_SECRET_KEY, async (err, decoded) => {
         if (err) {
             return res.status(400).send(err)
         }
         if (decoded.username !== req.body.username) {
             return res.status(400).send("Invalid token for the user")
         }
+        try {
+            const user = await User.findOne({ username: req.body.username });
+            if (!user) {
+                return res.status(404).send("User not found");
+            }
+
+            res.send({ message: "Valid Token", username: user.username, profile: user.profile });
+        } catch (dbError) {
+            res.status(500).send("Database error: " + dbError.message);
+        }
     })
-    const user = await User.findOne({ username: req.body.username })
-    res.send({ message: "Valid Token", username: user.username, profile: user.profile })
 
-
+    
 }
 
 const check = async (req, res) => {
