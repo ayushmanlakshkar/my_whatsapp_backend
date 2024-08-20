@@ -1,7 +1,6 @@
 const Group = require('../models/groupmodel');
 const Messages = require('../models/messagemodel')
 const User = require('../models/usermodel')
-const { formatTimestamp } = require('../utils/timestamp');
 
 const get_Messages = async (req, res) => {
     if (req.body.type == "friends") {
@@ -14,7 +13,7 @@ const get_Messages = async (req, res) => {
                 username: {name:message.sender.username,profile:message.sender.profile},
                 message: message.message,
                 image: message.image,
-                timestamp: formatTimestamp(message.createdAt)
+                timestamp: message.createdAt
             }
         })
         res.send(rearrange_messages)
@@ -28,7 +27,7 @@ const get_Messages = async (req, res) => {
                 username: {name:message.sender.username,profile:message.sender.profile},
                 message: message.message,
                 image:message.image,
-                timestamp: formatTimestamp(message.createdAt)
+                timestamp: message.createdAt
             }
         })
         res.send(rearrange_messages)
@@ -51,7 +50,7 @@ const send_Message = async (req, res) => {
             username:{name:sender.username,profile:sender.profile},
             message: message.message,
             image:message.image,
-            timestamp: formatTimestamp(message.createdAt)
+            timestamp: message.createdAt
         }
         res.send(rearrange_message)
 
@@ -69,7 +68,7 @@ const send_Message = async (req, res) => {
             username:{name:sender.username,profile:sender.profile},
             message: message.message,
             image:message.image,
-            timestamp: formatTimestamp(message.createdAt)
+            timestamp: message.createdAt
         }
     res.send(rearrange_message)
     }

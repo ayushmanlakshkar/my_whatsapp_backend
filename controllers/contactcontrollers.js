@@ -23,7 +23,6 @@ const send_friendrequest = async (req, res) => {
                 res.status(400).send(`U already recieved friend request from ${req.body.reciever}`)
             }
         }
-        
     }
 }
 
