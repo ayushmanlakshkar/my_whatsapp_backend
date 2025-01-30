@@ -19,8 +19,16 @@ const registerUser = async (req, res, next) => {
         if (userPresent) {
             return res.status(400).send('Username already in use. Choose another.');
         }
+        const avatars = [
+            "public/profilePictures/avatars/avatar1.png",
+            "public/profilePictures/avatars/avatar2.png",
+            "public/profilePictures/avatars/avatar3.png",
+            "public/profilePictures/avatars/avatar4.png",
+            "public/profilePictures/avatars/avatar5.png"
+          ];
+        const randomAvatar = avatars[Math.floor(Math.random() * avatars.length)];
 
-        const profile = req.file ? req.file.path : null;
+        const profile = req.file ? req.file.path : randomAvatar;
 
         const user = await User.create({ username, password, profile });
         const token = await user.generateToken();
