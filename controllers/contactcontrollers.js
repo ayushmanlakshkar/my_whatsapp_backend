@@ -85,6 +85,10 @@ const leave_group = async (req, res) => {
     const userid = await User.findOne({ username: req.body.username }).populate('groups')
     await User.findOneAndUpdate({ _id: userid }, { $pull: { groups: groupid._id } })
     await Group.findOneAndUpdate({ _id: groupid }, { $pull: { users: userid._id } })
+    const group = await Group.findOne({ _id: groupid })
+    if(group.users.length===0){
+        group.delete()
+    }
     res.send(`you left group ${req.body.groupname}`)
     } catch (error) {
         res.status(400).send(error)
