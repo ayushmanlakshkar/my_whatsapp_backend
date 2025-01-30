@@ -132,7 +132,7 @@ const get_mycontacts = async (req, res) => {
                 isOnline: friend.socket_id ? true : false
             })
     })
-    const groups = user.groups.map(group => ({ name: group.Groupname, profile: group.profile}))
+    const groups = user.groups.map(group => ({ name: group.Groupname, profile: group.profile, users: group.users}))
     res.send({ friends: friends, groups: groups })
 
 }
