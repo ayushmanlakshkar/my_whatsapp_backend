@@ -20,7 +20,7 @@ const registerUser = async (req, res, next) => {
             return res.status(400).send('Username already in use. Choose another.');
         }
 
-        const profile = req.file ? req.file.path : 'public/profilePictures/logo.png';
+        const profile = req.file ? req.file.path : null;
 
         const user = await User.create({ username, password, profile });
         const token = await user.generateToken();
