@@ -139,7 +139,10 @@ const get_mycontacts = async (req, res) => {
     }))
     const groups = await Promise.all(user.groups.map(async group => {
         const latestMessage = await Message.findOne({ group: group._id }).sort({ createdAt: -1 });
-        const sender = await User.findOne({ _id: latestMessage.sender })
+        let sender
+        if (latestMessage){
+            sender = await User.findOne({ _id: latestMessage.sender })
+        }
         return (
             {
                 name: group.Groupname,
