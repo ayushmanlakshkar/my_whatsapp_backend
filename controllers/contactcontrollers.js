@@ -133,7 +133,8 @@ const get_mycontacts = async (req, res) => {
                 profile: friend.profile,
                 isOnline: friend.socket_id ? true : false,
                 latestMessage: latestMessage ? latestMessage.message : null,
-                timestamp: latestMessage ? latestMessage.createdAt : null
+                timestamp: latestMessage ? latestMessage.createdAt : null,
+                latestMessageSender: latestMessage ? latestMessage.sender : null
             })
     }))
     const groups = await Promise.all(user.groups.map(async group => {
@@ -144,7 +145,8 @@ const get_mycontacts = async (req, res) => {
                 profile: group.profile,
                 users: group.users,
                 latestMessage: latestMessage ? latestMessage.message : null,
-                timestamp: latestMessage ? latestMessage.createdAt : null
+                timestamp: latestMessage ? latestMessage.createdAt : null,
+                latestMessageSender: latestMessage ? latestMessage.sender : null
             }
         )
     }));
